@@ -113,12 +113,12 @@ export default function Dashboard() {
   }
 
   const addToWatchlistDB = async (sym: string) => {
-    if (!user) return
-    await supabase.from('watchlist_items').upsert(
-      {user_id: user.id, symbol: sym},
-      {onConflict: 'user_id,symbol'}
-    )
-  }
+  if (!user) return
+  const { error } = await supabase
+    .from('watchlist_items')
+    .insert({user_id: user.id, symbol: sym})
+  if (error) console.error('Watchlist save error:', error)
+}
 
   const removeFromWatchlist = async (sym: string) => {
     if (!user) return
